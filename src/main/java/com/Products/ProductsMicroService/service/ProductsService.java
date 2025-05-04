@@ -6,8 +6,10 @@ import com.Products.ProductsMicroService.exceptions.NoIdNumberException;
 import com.Products.ProductsMicroService.mapper.ProductMapper;
 import com.Products.ProductsMicroService.model.dto.ProductRequestDTO;
 import com.Products.ProductsMicroService.model.dto.ProductResponseDTO;
+import com.Products.ProductsMicroService.model.entity.ProductConfiguration;
 import com.Products.ProductsMicroService.model.entity.ProductEntity;
 import com.Products.ProductsMicroService.repository.ProductsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductsService {
 
     private final ProductsRepository productRepository;
@@ -32,6 +35,7 @@ public class ProductsService {
             }
         }
         ProductEntity productEntity = productMapper.mapProductRequestDTOToEntity(productRequestDTO);
+        assignProductConfiguration(productEntity, productRequestDTO);
         ProductEntity savedEntity = productRepository.save(productEntity);
         return productMapper.mapEntityToResponseDTO(savedEntity);
     }
@@ -83,6 +87,26 @@ public class ProductsService {
     private void configureSmartphone(ProductRequestDTO productRequestDTO) {
         if (productRequestDTO.getBatteryCapacity() == null || productRequestDTO.getColor() == null) {
             throw new MissingConfigurationException("Smartphone must have color and battery capacity selected", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void assignProductConfiguration(ProductEntity entity, ProductRequestDTO productRequestDTO) {
+        if (productRequestDTO.getType() == ProductsType.COMPUTER || productRequestDTO.getType() == ProductsType.SMARTPHONE) {
+            ProductConfiguration config = new ProductConfiguration();
+
+            if (productRequestDTO.getType() == ProductsType.COMPUTER) {
+                config.setProcessor(productRequestDTO.getProcessor());
+                config.setRam(productRequestDTO.getRam());
+            }
+
+            if (productRequestDTO.getType() == ProductsType.SMARTPHONE) {
+                config.setColor(productRequestDTO.getColor());
+                config.setBatteryCapacity(productRequestDTO.getBatteryCapacity());
+                config.setAccessories(productRequestDTO.getAccessories());
+            }
+
+            config.setProduct(entity);
+            entity.setConfiguration(config);
         }
     }
 }

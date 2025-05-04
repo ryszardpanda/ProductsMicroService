@@ -1,6 +1,7 @@
 package com.Products.ProductsMicroService.model.dto;
 
 import com.Products.ProductsMicroService.common.ProductsType;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,12 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRequestDTO {
-    @NotBlank
-    private String name;
-    @NotNull
-    private double price;
-    private ProductsType type;
 
+    @NotNull(message = "Name must not be null")
+    @NotBlank(message = "Name must not be blank")
+    private String name;
+    @Min(value = 0, message = "Price must be greater than or equal to 0")
+    private double price;
+    @NotNull(message = "Product type must not be null")
+
+    private ProductsType type;
     private String processor;
     private Integer ram;
 

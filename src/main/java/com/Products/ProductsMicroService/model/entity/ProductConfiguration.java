@@ -20,7 +20,7 @@ public class ProductConfiguration {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
     private String processor;

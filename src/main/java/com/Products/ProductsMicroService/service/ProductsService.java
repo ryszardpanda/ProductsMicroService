@@ -37,11 +37,13 @@ public class ProductsService {
         ProductEntity productEntity = productMapper.mapProductRequestDTOToEntity(productRequestDTO);
         assignProductConfiguration(productEntity, productRequestDTO);
         ProductEntity savedEntity = productRepository.save(productEntity);
+        log.info("Product " + productRequestDTO +  " sucesfully saved");
         return productMapper.mapEntityToResponseDTO(savedEntity);
     }
 
     public Page<ProductResponseDTO> getProducts(Pageable pageable) {
         Page<ProductEntity> page = productRepository.findAll(pageable);
+        log.info("Product Page " + pageable +  " successfully returned");
         return page.map(productMapper::mapEntityToResponseDTO);
     }
 
@@ -49,12 +51,16 @@ public class ProductsService {
         ProductEntity productEntity = productRepository
                 .findById(id)
                 .orElseThrow(() -> new NoIdNumberException("Product with id: " + id + " not found", HttpStatus.NOT_FOUND));
-        return productMapper.mapEntityToResponseDTO(productEntity);
+        ProductResponseDTO productResponseDTO = productMapper.mapEntityToResponseDTO(productEntity);
+        log.info("Product with id: " + id + " successfully returned: " + productResponseDTO);
+        return productResponseDTO;
     }
 
     public Page<ProductResponseDTO> getProductsByType(ProductsType productsType, Pageable pageable) {
         Page<ProductEntity> page = productRepository.findAllByType(productsType, pageable);
-        return page.map(productMapper::mapEntityToResponseDTO);
+        Page<ProductResponseDTO> productResponseDTO = page.map(productMapper::mapEntityToResponseDTO);
+        log.info("Products with type: " + productsType + " successfully returned: " + productResponseDTO);
+        return productResponseDTO;
     }
 
     @Transactional
@@ -63,6 +69,7 @@ public class ProductsService {
                 .findById(id)
                 .orElseThrow(() -> new NoIdNumberException("Product with id: " + id + " not found", HttpStatus.NOT_FOUND));
         productRepository.delete(productEntity);
+        log.info("Product with id: " + id + " successfully deleted");
     }
 
     @Transactional
@@ -75,19 +82,24 @@ public class ProductsService {
 
         productRepository.save(productEntity);
 
-        return productMapper.mapEntityToResponseDTO(productEntity);
+        ProductResponseDTO productResponseDTO = productMapper.mapEntityToResponseDTO(productEntity);
+        log.info("Product with id: " + id + " successfully updated: " + productResponseDTO);
+        return productResponseDTO;
     }
 
     private void configureComputer(ProductRequestDTO productRequestDTO) {
         if (productRequestDTO.getRam() == null || productRequestDTO.getProcessor() == null) {
             throw new MissingConfigurationException("Computer must have processor and RAM selected", HttpStatus.BAD_REQUEST);
         }
+        log.info("Added specific config for this computer - RAM capacity: " + productRequestDTO.getRam() + " and - processor " + productRequestDTO.getProcessor());
+
     }
 
     private void configureSmartphone(ProductRequestDTO productRequestDTO) {
         if (productRequestDTO.getBatteryCapacity() == null || productRequestDTO.getColor() == null) {
             throw new MissingConfigurationException("Smartphone must have color and battery capacity selected", HttpStatus.BAD_REQUEST);
         }
+        log.info("Added specific config for this smartphone - battery capacity: " + productRequestDTO.getBatteryCapacity() + " and - color " + productRequestDTO.getColor());
     }
 
     private void assignProductConfiguration(ProductEntity entity, ProductRequestDTO productRequestDTO) {
@@ -107,6 +119,7 @@ public class ProductsService {
 
             config.setProduct(entity);
             entity.setConfiguration(config);
+            log.info("Configuration for product " + productRequestDTO.getName() + " saved");
         }
     }
 }

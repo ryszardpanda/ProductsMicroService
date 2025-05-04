@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,19 +19,8 @@ public class ProductEntity {
     @Column(name = "PRODUCT_PRICE", length = 50, nullable = false)
     private double price;
     @Column(name = "PRODUCT_TYPE", length = 50, nullable = false)
-    private ProductsType productsType;
+    private ProductsType type;
 
-    @Column(name = "PROCESSOR", length = 100)
-    private String processor;
-    @Column(name = "RAM")
-    private Integer ram;
-    @Column(name = "COLOR", length = 30)
-    private String color;
-    @Column(name = "BATTERY_CAPACITY", length = 30)
-    private String batteryCapacity;
-
-    @ElementCollection
-    @CollectionTable(name = "PRODUCT_ACCESSORIES", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "ACCESSORY")
-    private List<String> accessories;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductConfiguration configuration;
 }

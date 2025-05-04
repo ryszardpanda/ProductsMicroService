@@ -17,7 +17,7 @@ public class ProductRequestDTO {
     private String name;
     @NotNull
     private double price;
-    private ProductsType productsType;
+    private ProductsType type;
 
     private String processor;
     private Integer ram;

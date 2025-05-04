@@ -7,10 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 import com.Products.ProductsMicroService.common.ProductsType;
 
-
-
-
 @Repository
 public interface ProductsRepository extends JpaRepository<ProductEntity, Long> {
-    Page<ProductEntity> findAllByProductsType(ProductsType type, Pageable pageable);
+    Page<ProductEntity> findAllByType(ProductsType type, Pageable pageable);
 }

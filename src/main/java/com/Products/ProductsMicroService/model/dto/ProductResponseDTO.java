@@ -14,7 +14,7 @@ public class ProductResponseDTO {
     private Long id;
     private String name;
     private double price;
-    private ProductsType productsType;
+    private ProductsType type;
 
     private String processor;
     private Integer ram;

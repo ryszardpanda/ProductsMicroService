@@ -25,7 +25,7 @@ public class ProductsService {
     @Transactional
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
 
-        switch (productRequestDTO.getProductsType()) {
+        switch (productRequestDTO.getType()) {
             case COMPUTER -> configureComputer(productRequestDTO);
             case SMARTPHONE -> configureSmartphone(productRequestDTO);
             case ELECTRONICS -> {
@@ -49,7 +49,7 @@ public class ProductsService {
     }
 
     public Page<ProductResponseDTO> getProductsByType(ProductsType productsType, Pageable pageable) {
-        Page<ProductEntity> page = productRepository.findAllByProductsType(productsType, pageable);
+        Page<ProductEntity> page = productRepository.findAllByType(productsType, pageable);
         return page.map(productMapper::mapEntityToResponseDTO);
     }
 
@@ -67,7 +67,7 @@ public class ProductsService {
         ProductEntity productEntity = productMapper.mapResponseDTOToEntity(productById);
         productEntity.setName(productRequestDTO.getName());
         productEntity.setPrice(productRequestDTO.getPrice());
-        productEntity.setProductsType(productRequestDTO.getProductsType());
+        productEntity.setType(productRequestDTO.getType());
 
         productRepository.save(productEntity);
 

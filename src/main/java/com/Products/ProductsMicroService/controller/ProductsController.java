@@ -4,9 +4,11 @@ import com.Products.ProductsMicroService.common.ProductsType;
 import com.Products.ProductsMicroService.model.dto.ProductRequestDTO;
 import com.Products.ProductsMicroService.model.dto.ProductResponseDTO;
 import com.Products.ProductsMicroService.service.ProductsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springdoc.core.annotations.ParameterObject;
 
@@ -19,7 +21,8 @@ public class ProductsController {
     private final ProductsService productService;
 
     @PostMapping
-    ProductResponseDTO addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    ProductResponseDTO addProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         return productService.addProduct(productRequestDTO);
     }
 

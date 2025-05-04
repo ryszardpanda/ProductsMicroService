@@ -1,6 +1,7 @@
 package com.Products.ProductsMicroService.service;
 
 import com.Products.ProductsMicroService.common.ProductsType;
+import com.Products.ProductsMicroService.exceptions.MissingConfigurationException;
 import com.Products.ProductsMicroService.exceptions.NoIdNumberException;
 import com.Products.ProductsMicroService.mapper.ProductMapper;
 import com.Products.ProductsMicroService.model.dto.ProductRequestDTO;
@@ -23,6 +24,13 @@ public class ProductsService {
 
     @Transactional
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
+
+        switch (productRequestDTO.getProductsType()) {
+            case COMPUTER -> configureComputer(productRequestDTO);
+            case SMARTPHONE -> configureSmartphone(productRequestDTO);
+            case ELECTRONICS -> {
+            }
+        }
         ProductEntity productEntity = productMapper.mapProductRequestDTOToEntity(productRequestDTO);
         ProductEntity savedEntity = productRepository.save(productEntity);
         return productMapper.mapEntityToResponseDTO(savedEntity);
@@ -55,7 +63,6 @@ public class ProductsService {
 
     @Transactional
     public ProductResponseDTO updateProductById(Long id, ProductRequestDTO productRequestDTO) {
-
         ProductResponseDTO productById = getProductById(id);
         ProductEntity productEntity = productMapper.mapResponseDTOToEntity(productById);
         productEntity.setName(productRequestDTO.getName());
@@ -65,5 +72,17 @@ public class ProductsService {
         productRepository.save(productEntity);
 
         return productMapper.mapEntityToResponseDTO(productEntity);
+    }
+
+    private void configureComputer(ProductRequestDTO productRequestDTO) {
+        if (productRequestDTO.getRam() == null || productRequestDTO.getProcessor() == null) {
+            throw new MissingConfigurationException("Computer must have processor and RAM selected", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void configureSmartphone(ProductRequestDTO productRequestDTO) {
+        if (productRequestDTO.getBatteryCapacity() == null || productRequestDTO.getColor() == null) {
+            throw new MissingConfigurationException("Smartphone must have color and battery capacity selected", HttpStatus.BAD_REQUEST);
+        }
     }
 }

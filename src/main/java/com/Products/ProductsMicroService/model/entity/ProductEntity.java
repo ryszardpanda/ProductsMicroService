@@ -7,11 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Getter
 @Setter
+@Table(name = "product")
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,12 +24,17 @@ public class ProductEntity {
     @Column(name = "PRODUCT_NAME", length = 50, nullable = false)
     private String name;
     @Column(name = "PRODUCT_PRICE", length = 50, nullable = false)
-    private double price;
+    private BigDecimal price;
     @Column(name = "PRODUCT_TYPE", length = 50, nullable = false)
     private ProductsType type;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ProductConfiguration configuration;
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+            name = "product_to_configuration",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "configuration_id")
+    )
+    private Set<ProductConfiguration> configurations = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

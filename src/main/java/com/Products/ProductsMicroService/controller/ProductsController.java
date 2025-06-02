@@ -26,7 +26,7 @@ public class ProductsController {
     @ResponseStatus(HttpStatus.CREATED)
     ProductResponseDTO addProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
         log.info("New request for endpoint POST/api/products logged");
-        return productService.addProduct(productRequestDTO);
+        return productService.createProduct(productRequestDTO);
     }
 
     @GetMapping

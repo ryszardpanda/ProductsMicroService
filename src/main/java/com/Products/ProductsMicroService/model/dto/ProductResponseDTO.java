@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -15,13 +16,7 @@ import java.util.List;
 public class ProductResponseDTO {
     private Long id;
     private String name;
-    private double price;
+    private BigDecimal price;
     private ProductsType type;
-
-    private String processor;
-    private Integer ram;
-
-    private String color;
-    private String batteryCapacity;
-    private List<String> accessories;
+    private List<ProductConfigurationDTO> configurations;
 }

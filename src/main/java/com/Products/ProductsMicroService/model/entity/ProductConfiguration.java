@@ -1,12 +1,16 @@
 package com.Products.ProductsMicroService.model.entity;
 
+import com.Products.ProductsMicroService.common.ConfigurationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -14,21 +18,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "product_configuration")
 public class ProductConfiguration {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private BigDecimal price;
+    @Enumerated(EnumType.STRING)
+    private ConfigurationType type;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity product;
-
-    private String processor;
-    private Integer ram;
-
-    private String color;
-    private String batteryCapacity;
-
+    @ManyToMany(mappedBy = "configurations")
+    private Set<ProductEntity> products = new HashSet<>();
     @ElementCollection
     @CollectionTable(name = "product_accessories", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "accessory")

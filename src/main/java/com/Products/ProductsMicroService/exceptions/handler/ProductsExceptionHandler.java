@@ -3,6 +3,7 @@ package com.Products.ProductsMicroService.exceptions.handler;
 import com.Products.ProductsMicroService.exceptions.ErrorMessage;
 import com.Products.ProductsMicroService.exceptions.MissingConfigurationException;
 import com.Products.ProductsMicroService.exceptions.NoIdNumberException;
+import com.Products.ProductsMicroService.exceptions.WrongTypeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,13 @@ public class ProductsExceptionHandler {
     @ExceptionHandler({NoIdNumberException.class})
     public ResponseEntity<ErrorMessage> handlePatientNotFoundException(
             NoIdNumberException ex) {
+        return new ResponseEntity<ErrorMessage>(
+                new ErrorMessage(ex.getMessage()), new HttpHeaders(), ex.getHttpStatus());
+    }
+
+    @ExceptionHandler({WrongTypeException.class})
+    public ResponseEntity<ErrorMessage> handleWrongTypeException(
+            WrongTypeException ex) {
         return new ResponseEntity<ErrorMessage>(
                 new ErrorMessage(ex.getMessage()), new HttpHeaders(), ex.getHttpStatus());
     }

@@ -16,7 +16,7 @@ import org.springdoc.core.annotations.ParameterObject;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/products")
+@RequestMapping("/api/products")
 @Slf4j
 public class ProductsController {
 
@@ -43,21 +43,21 @@ public class ProductsController {
         return productService.getProductById(id);
     }
 
-    @GetMapping("/byType")
+    @GetMapping("/by-type")
     @ResponseStatus(HttpStatus.OK)
     public Page<ProductResponseDTO> getProductsByType(@RequestParam("type") ProductsType type, @ParameterObject Pageable pageable) {
         log.info("New request for endpoint GET/api/products/" + type + " logged");
         return productService.getProductsByType(type, pageable);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long id) {
         log.info("New request for endpoint DELETE/api/products/" + id + " logged");
         productService.deleteProduct(id);
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDTO updateProductById(@PathVariable Long id, @RequestBody @Valid ProductRequestDTO updatedProduct) {
         log.info("New request for endpoint PATCH/api/products/" + id + " logged");

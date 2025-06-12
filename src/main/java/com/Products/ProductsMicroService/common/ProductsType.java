@@ -10,7 +10,9 @@ import java.util.Arrays;
 public enum ProductsType {
     ELECTRONICS("Electronics"),
     SMARTPHONE("Smartphone"),
-    COMPUTER("Computer");
+    COMPUTER("Computer"),
+    PRODUCT("Product");
+
 
     private String name;
 

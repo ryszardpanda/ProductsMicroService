@@ -20,13 +20,15 @@ import java.util.Set;
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long productId;
     @Column(name = "PRODUCT_NAME", length = 50, nullable = false)
     private String name;
     @Column(name = "PRODUCT_PRICE", length = 50, nullable = false)
     private BigDecimal price;
     @Column(name = "PRODUCT_TYPE", length = 50, nullable = false)
     private ProductsType type;
+    @Column(name = "PRODUCT_QUANTITY", length = 50, nullable = false)
+    private int quantity;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
@@ -45,8 +47,8 @@ public class ProductEntity {
 
         ProductEntity other = (ProductEntity) o;
 
-        return id != null &&
-                id.equals(other.getId());
+        return productId != null &&
+                productId.equals(other.getProductId());
     }
 
     @Override

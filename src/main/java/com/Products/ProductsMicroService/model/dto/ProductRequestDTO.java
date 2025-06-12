@@ -16,5 +16,6 @@ public class ProductRequestDTO {
     private String name;
     private BigDecimal price;
     private ProductsType type;
+    private int quantity;
     private List<ProductConfigurationDTO> configurations;
 }

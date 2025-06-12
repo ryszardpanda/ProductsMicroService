@@ -40,18 +40,20 @@ public class ProductsService {
         Set<ProductConfiguration> confs = checkConfiguration(dto);
 
         product.setConfigurations(confs);
-        productRepository.save(product);
-
-        return productMapper.toResponse(product);
+        ProductEntity saved = productRepository.saveAndFlush(product);
+        saved.getConfigurations().forEach(c ->
+                log.info("CFG {} -> id={}", c.getName(), c.getProductConfigurationId())
+        );
+        return productMapper.toResponse(saved);
     }
 
     private Set<ProductConfiguration> checkConfiguration(ProductRequestDTO dto) {
         Set<ProductConfiguration> confs = dto.getConfigurations().stream()
                 .map(confDto -> {
-                    if (confDto.getId() != null) {
+                    if (confDto.getProductConfigurationId() != null) {
                         return productConfigurationRepository
-                                .findById(confDto.getId())
-                                .orElseThrow(() -> new NoIdNumberException("Product with id: " + confDto.getId() + " not found", HttpStatus.NOT_FOUND));
+                                .findById(confDto.getProductConfigurationId())
+                                .orElseThrow(() -> new NoIdNumberException("Product with id: " + confDto.getProductConfigurationId() + " not found", HttpStatus.NOT_FOUND));
                     } else {
                         return productMapper.toEntity(confDto);
                     }

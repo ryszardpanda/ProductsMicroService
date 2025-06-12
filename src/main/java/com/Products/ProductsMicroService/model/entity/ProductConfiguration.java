@@ -21,7 +21,7 @@ import java.util.Set;
 @Table(name = "product_configuration")
 public class ProductConfiguration {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long productConfigurationId;
     private String name;
     private BigDecimal price;
     @Enumerated(EnumType.STRING)
@@ -43,8 +43,8 @@ public class ProductConfiguration {
 
         ProductConfiguration other = (ProductConfiguration) o;
 
-        return id != null &&
-                id.equals(other.getId());
+        return productConfigurationId != null &&
+                productConfigurationId.equals(other.getProductConfigurationId());
     }
 
     @Override

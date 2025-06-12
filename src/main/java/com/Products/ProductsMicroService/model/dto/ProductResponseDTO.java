@@ -14,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponseDTO {
-    private Long id;
+    private Long productId;
     private String name;
     private BigDecimal price;
     private ProductsType type;
+    private int quantity;
     private List<ProductConfigurationDTO> configurations;
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRequestDTO {
-
     private String name;
     private BigDecimal price;
     private ProductsType type;

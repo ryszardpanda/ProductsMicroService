@@ -108,6 +108,7 @@ public class ProductsService {
         productEntity.setName(productRequestDTO.getName());
         productEntity.setPrice(productRequestDTO.getPrice());
         productEntity.setType(productRequestDTO.getType());
+        productEntity.setQuantity(productRequestDTO.getQuantity());
 
         return productEntity;
     }

@@ -24,8 +24,7 @@ import org.springframework.http.HttpStatus;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -125,4 +124,104 @@ class ProductsMicroServiceApplicationTests {
 		verify(productRepository).findAll(pageReq);
 		verifyNoMoreInteractions(productRepository);
 	}
+
+	@Test
+	void getProductsById_ProductExist_ProductReturned(){
+		//given
+		ProductEntity product1 = new ProductEntity(1L, "product1", BigDecimal.valueOf(100), ProductsType.COMPUTER, 5, Set.of());
+		when(productRepository.findById(product1.getProductId())).thenReturn(Optional.of(product1));
+		//when
+		ProductResponseDTO result = productsService.getProductById(product1.getProductId());
+		//then
+		assertEquals(1, result.getProductId());
+		assertEquals("product1", result.getName());
+		assertEquals(BigDecimal.valueOf(100), result.getPrice());
+		assertEquals(ProductsType.COMPUTER, result.getType());
+		assertEquals(5, result.getQuantity());
+		assertTrue(result.getConfigurations().isEmpty());
+	}
+
+	@Test
+	void getProductsById_ProductDoesNotExist_NoIdNumberExceptionReturned(){
+		//given
+		when(productRepository.findById(1L)).thenReturn(Optional.empty());
+		//when
+		NoIdNumberException result = assertThrows(NoIdNumberException.class, () -> productsService.getProductById(1L));
+		//then
+		assertEquals("Product with id: " + 1 + " not found", result.getMessage());
+		assertEquals(HttpStatus.NOT_FOUND, result.getHttpStatus());
+	}
+
+	@Test
+	void getProductsByType_ProductsExist_ProductsPageReturned(){
+		//given
+		ProductEntity product1 = new ProductEntity(1L, "product1", BigDecimal.valueOf(100), ProductsType.COMPUTER, 5, Set.of());
+		ProductEntity product2 = new ProductEntity(1L, "product2", BigDecimal.valueOf(200), ProductsType.COMPUTER, 5, Set.of());
+
+		Pageable pageReq = PageRequest.of(0, 2, Sort.by("price").descending());
+
+		PageImpl<ProductEntity> repoPage = new PageImpl<>(List.of(product1, product2), pageReq, 2);
+
+		when(productRepository.findAllByType((ProductsType.COMPUTER), pageReq)).thenReturn(repoPage);
+		//when
+		Page<ProductResponseDTO> result = productsService.getProductsByType((ProductsType.COMPUTER), pageReq);
+		//then
+		assertEquals(2, result.getTotalElements());
+		assertEquals("product1", result.getContent().get(0).getName());
+		assertEquals("product2", result.getContent().get(1).getName());
+
+		verify(productRepository).findAllByType(ProductsType.COMPUTER, pageReq);
+		verifyNoMoreInteractions(productRepository);
+	}
+
+	@Test
+	void deleteProduct_ProductExist_ProductDeleted(){
+		//given
+		ProductEntity product1 = new ProductEntity(1L, "product1", BigDecimal.valueOf(100), ProductsType.COMPUTER, 5, Set.of());
+		when(productRepository.findById(product1.getProductId())).thenReturn(Optional.of(product1));
+		//when
+		productsService.deleteProduct(1L);
+		//then
+		verify(productRepository, times(1)).delete(product1);
+	}
+
+	@Test
+	void deleteProductById_ProductDoesNotExist_NoIdNumberExceptionReturned(){
+		//given
+		when(productRepository.findById(1L)).thenReturn(Optional.empty());
+		//when
+		NoIdNumberException result = assertThrows(NoIdNumberException.class, () -> productsService.deleteProduct(1L));
+		//then
+		assertEquals("Product with id: " + 1 + " not found", result.getMessage());
+		assertEquals(HttpStatus.NOT_FOUND, result.getHttpStatus());
+	}
+
+	@Test
+	void updateProductById_ProductExist_ProductUpdated(){
+		//given
+		ProductConfigurationDTO configDTO = new ProductConfigurationDTO(1L, "config1", BigDecimal.valueOf(111.11), ConfigurationType.PROCESSOR);
+
+		List<ProductConfigurationDTO> configListDTO = List.of(configDTO);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration(1L, "config1",
+				BigDecimal.valueOf(111.11), ConfigurationType.PROCESSOR, new HashSet<>(), new ArrayList<>());
+
+		HashSet<ProductConfiguration> productConfigurationsSet = new HashSet<ProductConfiguration>(List.of(productConfiguration));
+
+		ProductRequestDTO productRequestDTO = new ProductRequestDTO("New product", BigDecimal.valueOf(3000.22), ProductsType.SMARTPHONE, 2, configListDTO);
+
+		ProductEntity productEntity = new ProductEntity(1L, "Old product", BigDecimal.valueOf(222.22), ProductsType.COMPUTER, 1, productConfigurationsSet);
+
+		when(productRepository.save(any())).thenReturn(productEntity);
+		when(productRepository.findById(any())).thenReturn(Optional.of(productEntity));
+
+		//when
+		ProductResponseDTO result = productsService.updateProductById(productEntity.getProductId(), productRequestDTO);
+		//then
+		Assertions.assertEquals("New product", result.getName());
+		Assertions.assertEquals(BigDecimal.valueOf(3000.22), result.getPrice());
+		Assertions.assertEquals(ProductsType.SMARTPHONE, result.getType());
+		Assertions.assertEquals(2, result.getQuantity());
+	}
+
 }

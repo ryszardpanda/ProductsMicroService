@@ -11,7 +11,6 @@ import com.Products.ProductsMicroService.model.entity.ProductConfiguration;
 import com.Products.ProductsMicroService.model.entity.ProductEntity;
 import com.Products.ProductsMicroService.repository.ProductConfigurationRepository;
 import com.Products.ProductsMicroService.repository.ProductsRepository;
-import com.Products.ProductsMicroService.service.ProductsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,19 +27,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class ProductsMicroServiceApplicationTests {
+class ProductsServiceTest {
 
 	private ProductsRepository productRepository;
 	private ProductConfigurationRepository productConfigurationRepository;
 	private ProductMapper productMapper;
-	private ProductsService productsService;
+	private com.Products.ProductsMicroService.service.ProductsService productsService;
 
 	@BeforeEach
 	void setUp(){
 		this.productRepository = Mockito.mock(ProductsRepository.class);
 		this.productConfigurationRepository = Mockito.mock(ProductConfigurationRepository.class);
 		this.productMapper = Mappers.getMapper(ProductMapper.class);
-		this.productsService = new ProductsService(productRepository, productConfigurationRepository, productMapper);
+		this.productsService = new com.Products.ProductsMicroService.service.ProductsService(productRepository, productConfigurationRepository, productMapper);
 	}
 
 	@Test

@@ -1,0 +1,130 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-product-configuration
+      author: ryszardpanda
+      changes:
+        - createTable:
+            tableName: product_configuration
+            columns:
+              - column:
+                  name: product_configuration_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_product_configuration
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 02-create-product
+      author: ryszardpanda
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_product
+              - column:
+                  name: product_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_price
+                  type: DECIMAL(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 03-create-product_to_configuration
+      author: ryszardpanda
+      changes:
+        - createTable:
+            tableName: product_to_configuration
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: configuration_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: product_to_configuration
+            columnNames: product_id, configuration_id
+            constraintName: pk_product_to_configuration
+        - addForeignKeyConstraint:
+            constraintName: fk_ptc_product
+            baseTableName: product_to_configuration
+            baseColumnNames: product_id
+            referencedTableName: product
+            referencedColumnNames: product_id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_ptc_configuration
+            baseTableName: product_to_configuration
+            baseColumnNames: configuration_id
+            referencedTableName: product_configuration
+            referencedColumnNames: product_configuration_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 04-create-product_accessories
+      author: ryszardpanda
+      changes:
+        - createTable:
+            tableName: product_accessories
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accessory
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_accessories_configuration
+            baseTableName: product_accessories
+            baseColumnNames: product_id
+            referencedTableName: product_configuration
+            referencedColumnNames: product_configuration_id
+            onDelete: CASCADE
+        - addPrimaryKey:
+            tableName: product_accessories
+            columnNames: product_id, accessory
+            constraintName: pk_product_accessories

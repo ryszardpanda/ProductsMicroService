@@ -19,12 +19,13 @@ import java.util.Set;
 @Table(name = "product")
 public class ProductEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @Column(name = "PRODUCT_NAME", length = 50, nullable = false)
     private String name;
     @Column(name = "PRODUCT_PRICE", length = 50, nullable = false)
     private BigDecimal price;
+    @Enumerated(EnumType.STRING)
     @Column(name = "PRODUCT_TYPE", length = 50, nullable = false)
     private ProductsType type;
     @Column(name = "PRODUCT_QUANTITY", length = 50, nullable = false)

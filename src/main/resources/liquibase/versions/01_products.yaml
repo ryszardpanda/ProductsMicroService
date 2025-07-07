@@ -1,5 +1,18 @@
 databaseChangeLog:
   - changeSet:
+      id: 00-create-sequences
+      author: ryszardpanda
+      changes:
+        - createSequence:
+            sequenceName: product_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: product_configuration_seq
+            startValue: 1
+            incrementBy: 1
+
+  - changeSet:
       id: 01-create-product-configuration
       author: ryszardpanda
       changes:
@@ -9,7 +22,7 @@ databaseChangeLog:
               - column:
                   name: product_configuration_id
                   type: BIGINT
-                  autoIncrement: true
+                  defaultValueSequenceNext: product_configuration_seq
                   constraints:
                     primaryKey: true
                     primaryKeyName: pk_product_configuration
@@ -39,7 +52,7 @@ databaseChangeLog:
               - column:
                   name: product_id
                   type: BIGINT
-                  autoIncrement: true
+                  defaultValueSequenceNext: product_seq
                   constraints:
                     primaryKey: true
                     primaryKeyName: pk_product
